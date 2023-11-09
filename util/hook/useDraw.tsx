@@ -7,6 +7,16 @@ export default function useDraw() {
   useEffect(() => {
     const Handler = (e: MouseEvent) => {
       console.log({ x: e.clientX, y: e.clientY });
+      computePointInCanves(e);
+    };
+    const computePointInCanves = (e: MouseEvent) => {
+      const canvas = canvesRef.current;
+      if (!canvas) return;
+
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      return { x, y };
     };
     canvesRef.current?.addEventListener("mousemove", Handler);
     //  Remove eventListener
