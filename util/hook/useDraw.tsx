@@ -1,14 +1,21 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
-export default function useDraw() {
+export default function useDraw(
+  onDraw: ({ ctx, curentPoint, prevPoint }: Draw) => void
+) {
+  const [MouseDown, setMouseDown] = useState(false);
   const canvesRef = useRef<HTMLCanvasElement>(null);
-
+  const prevPoint = useRef<null | Point>(null);
+  const onMouseDown = () => setMouseDown(true);
   useEffect(() => {
     const Handler = (e: MouseEvent) => {
-      console.log({ x: e.clientX, y: e.clientY });
-      computePointInCanves(e);
+      const curentPoint = computePointInCanves(e);
+      const ctx = canvesRef.current?.getContext("2d");
+      if (!ctx || !curentPoint) return;
+      onDraw({ ctx, curentPoint, prevPoint: prevPoint.current });
+      prevPoint.current = curentPoint;
     };
     const computePointInCanves = (e: MouseEvent) => {
       const canvas = canvesRef.current;
@@ -25,6 +32,5 @@ export default function useDraw() {
       // eslint-disable-next-line react-hooks/exhaustive-deps
       canvesRef.current?.addEventListener("mousemove", Handler);
   }, []);
-  return { canvesRef };
+  return { canvesRef, onMouseDown };
 }
-// Just for have some status

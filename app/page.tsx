@@ -2,7 +2,7 @@
 import useDraw from "@/util/hook/useDraw";
 
 export default function Home() {
-  const { canvesRef } = useDraw();
+  const { canvesRef, onMouseDown } = useDraw(drawline);
   function drawline({ prevPoint, curentPoint, ctx }: Draw) {
     const { x: currX, y: currY } = curentPoint;
     const lineColor = "#000";
@@ -21,10 +21,13 @@ export default function Home() {
     ctx.fill();
   }
   return (
-    <div className="w-full h-screen flex items-center justify-center py-10">
+    <div className="w-screen h-screen flex items-center justify-center py-10">
       <canvas
         ref={canvesRef}
-        className="w-full max-w-[70%] h-full border border-neutral-400 rounded "
+        onMouseDown={onMouseDown}
+        width={720}
+        height={750}
+        className="  border border-neutral-400 rounded "
       />
     </div>
   );
