@@ -11,6 +11,7 @@ export default function useDraw(
   const onMouseDown = () => setMouseDown(true);
   useEffect(() => {
     const Handler = (e: MouseEvent) => {
+      if (!MouseDown) return;
       const curentPoint = computePointInCanves(e);
       const ctx = canvesRef.current?.getContext("2d");
       if (!ctx || !curentPoint) return;
@@ -26,11 +27,18 @@ export default function useDraw(
       const y = e.clientY - rect.top;
       return { x, y };
     };
+    const mouseUpHandler = () => {
+      setMouseDown(false);
+      prevPoint.current = null;
+    };
     canvesRef.current?.addEventListener("mousemove", Handler);
+    window.addEventListener("mouseup", mouseUpHandler);
     //  Remove eventListener
-    return () =>
+    return () => {
       // eslint-disable-next-line react-hooks/exhaustive-deps
-      canvesRef.current?.addEventListener("mousemove", Handler);
-  }, []);
+      canvesRef.current?.removeEventListener("mousemove", Handler);
+      window.removeEventListener("mouseup", mouseUpHandler);
+    };
+  }, [onDraw]);
   return { canvesRef, onMouseDown };
 }
