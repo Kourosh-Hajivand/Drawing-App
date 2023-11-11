@@ -9,6 +9,13 @@ export default function useDraw(
   const canvesRef = useRef<HTMLCanvasElement>(null);
   const prevPoint = useRef<null | Point>(null);
   const onMouseDown = () => setMouseDown(true);
+  const clearCanves = () => {
+    const canvas = canvesRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  };
   useEffect(() => {
     const Handler = (e: MouseEvent) => {
       if (!MouseDown) return;
@@ -40,5 +47,5 @@ export default function useDraw(
       window.removeEventListener("mouseup", mouseUpHandler);
     };
   }, [onDraw]);
-  return { canvesRef, onMouseDown };
+  return { canvesRef, onMouseDown, clearCanves };
 }
