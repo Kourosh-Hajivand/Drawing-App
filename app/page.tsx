@@ -1,11 +1,13 @@
 "use client";
 import useDraw from "@/util/hook/useDraw";
-
+import { useState } from "react";
+import { ChromePicker } from "react-color";
 export default function Home() {
-  const { canvesRef, onMouseDown } = useDraw(drawline);
+  const [color, setcolor] = useState<string>("#000");
+  const { canvesRef, onMouseDown, clearCanves } = useDraw(drawline);
   function drawline({ prevPoint, curentPoint, ctx }: Draw) {
     const { x: currX, y: currY } = curentPoint;
-    const lineColor = "#000";
+    const lineColor = color;
     const lineWidth = 5;
     let startPoint = prevPoint ?? curentPoint;
     ctx.beginPath();
@@ -21,7 +23,22 @@ export default function Home() {
     ctx.fill();
   }
   return (
-    <div className="w-screen h-screen flex items-center justify-center py-10">
+    <div className="w-screen h-screen flex items-center justify-center py-10 gap-10">
+      <div className="flex flex-col gap-5">
+        {" "}
+        <ChromePicker
+          color={color}
+          onChange={(e) => {
+            setcolor(e.hex);
+          }}
+        />
+        <button
+          className="w-full px-6 py-4 rounded border border-neutral-400 shadow"
+          onClick={() => clearCanves()}
+        >
+          Clear
+        </button>
+      </div>
       <canvas
         ref={canvesRef}
         onMouseDown={onMouseDown}
